@@ -18,6 +18,12 @@ class User {
     email: string;
 
     @Column()
+    telefone: string;
+
+    @Column()
+    nome_usuario: string;
+
+    @Column()
     password: string;
 
     @Column()

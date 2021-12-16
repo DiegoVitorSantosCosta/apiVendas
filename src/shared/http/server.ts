@@ -6,12 +6,17 @@ import routes from './routes';
 import AppError from '../erros/AppErros';
 import "@shared/typeorm";
 import { errors } from "celebrate";
-
+import uploadConfig from "@config/upload"
+import path from 'path';
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// rotas estaticas , serve para acessar arquivos estaticos passando o /file com o nome do arquivo
+
+app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'uploads')));
 
 app.use(routes);
 

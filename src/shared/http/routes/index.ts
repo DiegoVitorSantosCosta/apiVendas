@@ -7,6 +7,8 @@ const routes = Router();
 
 routes.use('/products', productsRouter); // aqui estou dizendo que o endpoint /products vai usar todos metodos de productsRouter
 routes.use('/users', userRoutes);
+
 routes.use('/sessions', sessionRoutes);
+
 
 export default routes
