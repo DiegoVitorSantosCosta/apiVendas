@@ -16,6 +16,7 @@ usersRouter.get('/', isAuthenticated, usersController.index);
 usersRouter.post('/', usersController.create);
 
 usersRouter.get('/:id', usersController.show);
+usersRouter.put('/:id', usersController.update);
 
 // usersRouter.post("/avatar", isAuthenticated, upload.single('avatar'), usersAvatarController.create);
 

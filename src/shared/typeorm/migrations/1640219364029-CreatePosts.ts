@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateFeeds1639663206591 implements MigrationInterface {
+export class CreatePosts1640219364029 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
 
@@ -20,19 +20,25 @@ export class CreateFeeds1639663206591 implements MigrationInterface {
                         name: 'nomeUsuario',
                         type: 'varchar',
                     },
+
                     {
-                        name: 'avatar',
-                        type: 'decimal',
-                        precision: 10,
-                        scale: 2,
+                        name: 'idUsuario',
+                        type: 'int',
                     },
                     {
                         name: 'descricao',
+                        type: 'varchar'
+                    },
+
+                    {
+                        name: 'foto',
                         type: 'varchar',
+                        isNullable: true,
                     },
                     {
-                        name: 'localizacao',
-                        type: 'varchar'
+                        name: 'avatar',
+                        type: 'varchar',
+                        isNullable: true
                     },
                     {
                         name: 'created_at',
@@ -44,6 +50,7 @@ export class CreateFeeds1639663206591 implements MigrationInterface {
                         type: 'timestamp',
                         default: 'now()',
                     },
+
                 ],
             }),
         );
@@ -51,7 +58,7 @@ export class CreateFeeds1639663206591 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('products');
+        await queryRunner.dropTable('feeds');
     }
 
 }

@@ -8,11 +8,26 @@ import "@shared/typeorm";
 import { errors } from "celebrate";
 import uploadConfig from "@config/upload"
 import path from 'path';
-const app = express();
+import "./websocket";
+import { Server, Socket } from 'socket.io';
+import http from 'http';
+
 const port = 3000;
+
+const app = express();
+
 
 app.use(cors());
 app.use(express.json());
+
+
+const serverHttp = http.createServer(app);
+const io = new Server(serverHttp);
+var idCorrespodente: any;
+const mensagens: any = [];
+var dadosDeQuemEntrouEmContato: any = [];
+
+
 
 // rotas estaticas , serve para acessar arquivos estaticos passando o /file com o nome do arquivo
 
@@ -39,6 +54,93 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     message: 'Erro no servidor interno'
   });
 });
+
+function mandarMenssagem(temMsg: any) {
+  if (temMsg) {
+
+  }
+}
+io.on('connection', (cliente) => {
+
+  cliente.on('mensagens', (msg: any) => {
+
+    idCorrespodente = msg.idCorrespodente
+    let objMsg = {
+      id: msg.id,
+      mensagem: msg.mensagem
+    }
+
+    // console.log(objMsg);
+
+    mensagens.push(objMsg);
+
+    console.log(mensagens);
+
+    let obj = {
+
+      id: msg.dadosDeQuemMandaMensagem.id,
+      mensagens,
+      avatar: msg.dadosDeQuemMandaMensagem.avatar,
+      novaMsg: mensagens[mensagens.length - 1].id == msg.id ? true : false,
+    }
+    dadosDeQuemEntrouEmContato = obj;
+
+    // io.to(msg.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+
+  })
+  cliente.on('join', function (data) {
+    cliente.join(data.id);
+    console.log(data.id)
+
+    io.to(idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+
+
+    // if (dadosDeQuemEntrouEmContato) cliente.emit("previousMensages", dadosDeQuemEntrouEmContato);
+
+
+    // cliente.on('mensagens', (msg: any) => {
+
+    //   let objMsg = {
+    //     id: msg.id,
+    //     mensagem: msg.mensagem
+    //   }
+
+    //   console.log(objMsg);
+
+    //   mensagens.push(objMsg);
+
+    //   // console.log(mensagens);
+
+    //   let obj = {
+
+    //     id: msg.dadosDeQuemMandaMensagem.id,
+    //     mensagens,
+    //     avatar: msg.dadosDeQuemMandaMensagem.avatar,
+    //     novaMsg: mensagens[mensagens.length - 1].id == msg.id ? true : false,
+    //   }
+    //   dadosDeQuemEntrouEmContato = obj;
+
+    // io.to(msg.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+    //   // io.to(msg.id).emit('mensagem', { dadosDeQuemEntrouEmContato, paraMInMesmo: 'ok' });
+    //   // cliente.emit('mensagem', dadosDeQuemEntrouEmContato);
+
+    // })
+  });
+
+});
+
+
+io.on('disconected', (socket: Socket) => {
+  console.log('cliente desconectado')
+
+  // desconectar cliente
+  socket.disconnect(true);
+
+})
+
+serverHttp.listen(3333, () => {
+  console.log("websocket na porta 3333");
+})
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}! 🏆`);

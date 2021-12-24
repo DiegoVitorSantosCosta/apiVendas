@@ -3,6 +3,7 @@ import CreateUserService from '@modules/users/services/CreateUserService';
 import ListUserService from '@modules/users/services/ListUserService';
 import { Request, Response } from 'express';
 import path from 'path';
+import UpdateUser from '../services/UpdateUserService';
 
 export default class UsersController {
     public async index(request: Request, response: Response): Promise<Response> {
@@ -41,6 +42,25 @@ export default class UsersController {
             telefone,
             nome_usuario
         });
+
+        return response.json(user);
+    }
+
+    public async update(request: Request, response: Response): Promise<Response> {
+        const { id } = request.params;
+        const { name, email, password, telefone, nome_usuario } = request.body;
+
+        const updateUser = new UpdateUser();
+
+        const user = await updateUser.update({
+            name,
+            email,
+            password,
+            telefone,
+            nome_usuario,
+            id
+        });
+
 
         return response.json(user);
     }
