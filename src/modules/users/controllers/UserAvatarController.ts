@@ -15,33 +15,14 @@ export default class UserAvatarController {
             userId: request.user.id,
             avatarFilename: request.file?.filename
         });
+        user.avatar = await "http://localhost:3000/" + user.avatar;
 
-        user.avatar = "http://localhost:3000/" + user.avatar;
-        feedList.update({
+        await feedList.update({
             userId: request.user.id,
             avatarFilename: user.avatar
 
-        })
-
-        return response.json(feed);
+        });
+        return response.json(user);
 
     }
-
-    // public async create(request: Request, response: Response): Promise<Response> {
-    //     const { name, email, password, telefone, nome_usuario } = request.body;
-
-    //     const createUser = new UpdateUserAvatarService();
-
-    //     const user = await createUser.s({
-    //         name,
-    //         email,
-    //         password,
-    //         telefone,
-    //         nome_usuario
-    //     });
-
-    //     return response.json(user);
-    // }
-
-
 }

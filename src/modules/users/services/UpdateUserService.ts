@@ -14,7 +14,7 @@ class UpdateUser {
             throw new AppError('Usuario não existe.');
         }
 
-        const existeEmail = await usersRepository.findByEmail(email);
+        // const existeEmail = await usersRepository.findByEmail(email);
 
         user.name = name;
         user.nome_usuario = nome_usuario;
@@ -22,6 +22,7 @@ class UpdateUser {
         user.email = email;
 
         await usersRepository.save(user);
+
 
         return user;
     }

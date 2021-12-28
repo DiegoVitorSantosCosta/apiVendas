@@ -4,6 +4,7 @@ import ListUserService from '@modules/users/services/ListUserService';
 import { Request, Response } from 'express';
 import path from 'path';
 import UpdateUser from '../services/UpdateUserService';
+import CreateFeedService from "../../feeds/services/CreateFeedsService";
 
 export default class UsersController {
     public async index(request: Request, response: Response): Promise<Response> {
@@ -46,12 +47,19 @@ export default class UsersController {
         return response.json(user);
     }
 
+
     public async update(request: Request, response: Response): Promise<Response> {
         const { id } = request.params;
         const { name, email, password, telefone, nome_usuario } = request.body;
 
+
         const updateUser = new UpdateUser();
 
+        const updateFeed = new CreateFeedService();
+
+        const feed = await updateFeed.updateName(nome_usuario, id);
+
+        console.log(feed);
         const user = await updateUser.update({
             name,
             email,
@@ -60,7 +68,6 @@ export default class UsersController {
             nome_usuario,
             id
         });
-
 
         return response.json(user);
     }

@@ -91,6 +91,24 @@ class CreateFeedService {
 
         return feeds;
     }
+
+    public async updateName(nomeUsuario: string, userId: string): Promise<User | undefined> {
+        const feedRepository = getCustomRepository(PostRepository);
+
+        const feeds: any = await feedRepository.findById(userId);
+
+        if (!feeds) {
+            throw new AppError('Não existe feeds desse usuario.');
+        }
+
+        feeds.forEach((feed: any) => {
+            feed.nomeUsuario = nomeUsuario;
+        });
+
+        await feedRepository.save(feeds);
+
+        return feeds;
+    }
 }
 
 export default CreateFeedService;
