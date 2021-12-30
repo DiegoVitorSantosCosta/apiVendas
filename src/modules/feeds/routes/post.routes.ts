@@ -11,17 +11,11 @@ const cadastroFoto = multer(uploadConfig);
 
 postRouter.post("/",
     isAuthenticated,
-    feedController.create, (req, res) => {
-
-    })
+    feedController.create)
 
 postRouter.get("/:id",
     isAuthenticated,
-    feedController.index,
-    (req, res) => {
-
-
-    })
+    feedController.index)
 
 postRouter.get("/", isAuthenticated, feedController.show)
 

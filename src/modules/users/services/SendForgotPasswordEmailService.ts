@@ -1,3 +1,4 @@
+import EtherealMail from '@config/mail/EtherealMail';
 import AppError from 'src/shared/erros/AppErros';
 import { getCustomRepository } from 'typeorm';
 import UsersRepository from '../typeorm/repositories/UserRepository';
@@ -20,8 +21,22 @@ class SendForgotPasswordEmailService {
             throw new AppError('User not found.', 404);
         }
 
-        const token = await userTokenReposytory.generated(emailExists.id);
-        console.log(token);
+        const { token }: any = await userTokenReposytory.generated(emailExists.id);
+
+        await EtherealMail.sendMail({
+            to: {
+                name: emailExists.name,
+                email: emailExists.email
+            },
+            subject: 'Recuperação de senha',
+            templateData: {
+                template: `Olá {{ name }} : {{ token }}`,
+                variables: {
+                    name: emailExists.name,
+                    token
+                }
+            }
+        });
 
     }
 }
