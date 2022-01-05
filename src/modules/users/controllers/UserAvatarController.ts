@@ -3,18 +3,24 @@ import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
 import UpdateUserAvatarService from '../services/UpdateAvatarService';
 import UsersRepository from '../typeorm/repositories/UserRepository';
+import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
 
 export default class UserAvatarController {
     public async update(request: Request, response: Response): Promise<Response> {
 
         const updateAvatar = new UpdateUserAvatarService();
+
+
         const feedList = new CreateFeedService();
-        const feed: any = await feedList.listFeed(request, response);
+        await feedList.listFeed(request, response);
 
         const user: any = await updateAvatar.execute({
             userId: request.user.id,
-            avatarFilename: request.file?.filename
+            avatarFilename: request.body?.file
         });
+
         user.avatar = await "http://localhost:3000/" + user.avatar;
 
         await feedList.update({
@@ -25,4 +31,5 @@ export default class UserAvatarController {
         return response.json(user);
 
     }
+
 }

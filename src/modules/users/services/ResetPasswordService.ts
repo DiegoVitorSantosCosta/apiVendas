@@ -2,7 +2,7 @@ import AppError from 'src/shared/erros/AppErros';
 import { getCustomRepository } from 'typeorm';
 import UsersRepository from '../typeorm/repositories/UserRepository';
 import UserTokenRepository from '../typeorm/repositories/UserTokenRepository';
-import { isAfter, addHours } from "date-fns";
+import { isAfter, addHours } from "date-fns"; // importa a biblioteca para validar a data
 import { hash } from 'bcryptjs';
 interface IRequest {
     token: string;
@@ -17,6 +17,10 @@ class ResetPasswordService {
         const userTokenReposytory = getCustomRepository(UserTokenRepository);
 
         const userToken: any = await userTokenReposytory.findByToken(token);
+
+        if (!userToken) {
+            throw new AppError('Token invalido.', 401);
+        }
 
         const user = await usersRepository.findById(userToken.user_id);
 

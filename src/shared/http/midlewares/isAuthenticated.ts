@@ -10,9 +10,9 @@ export interface ITokenPayload {
     sub: string;
 };
 
-export default function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+export default async function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 
-    const authHeader = req.headers.authorization;
+    const authHeader = await req.headers.authorization;
 
     if (!authHeader) {
         throw new AppError('O token não foi enviado !', 401);

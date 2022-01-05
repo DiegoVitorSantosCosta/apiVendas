@@ -29,10 +29,11 @@ productsRouter.post('/',
     productsControler.create
 );
 
+
 productsRouter.put('/:id',
     celebrate({
         [Segments.PARAMS]: {
-            id: Joi.string().uuid().required().uuid(),
+            id: Joi.string().required(),
         },
         [Segments.BODY]: {
             name: Joi.string().required(),

@@ -50,7 +50,7 @@ export default class UsersController {
 
     public async update(request: Request, response: Response): Promise<Response> {
         const { id } = request.params;
-        const { name, email, password, telefone, nome_usuario } = request.body;
+        const { name, email, password, old_password, telefone, nome_usuario } = request.body;
 
 
         const updateUser = new UpdateUser();
@@ -59,13 +59,13 @@ export default class UsersController {
 
         const feed = await updateFeed.updateName(nome_usuario, id);
 
-        console.log(feed);
         const user = await updateUser.update({
             name,
             email,
             password,
             telefone,
             nome_usuario,
+            old_password,
             id
         });
 

@@ -15,6 +15,16 @@ class PostRepository extends Repository<Post> {
         return feed;
     }
 
+    public async findByFeed(id: string) {
+        const feed = await this.find({
+            where: {
+                id
+            }
+        })
+
+        return feed;
+    }
+
 }
 
 export default PostRepository;

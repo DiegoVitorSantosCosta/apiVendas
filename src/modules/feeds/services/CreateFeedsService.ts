@@ -30,9 +30,9 @@ class CreateFeedService {
             throw new AppError('Usuario não encontrado.');
         }
 
+
         const listUser = new ListUserService();
 
-        console.log(user);
         avatar = await `http://localhost:3000/${userExists?.avatar}`;
 
         const feed = feedRepository.create({
@@ -55,10 +55,13 @@ class CreateFeedService {
 
         const feed = await feedRepository.findById(request.user.id);
 
+
         if (!feed) {
             throw new AppError('Feed não encontrado.');
         }
-        // const users = await usersRepository.find();
+        await feed.map((feed: any) => {
+            feed.foto = `http://localhost:3000/${feed.foto}`;
+        });
 
         return response.json(feed);
     }
@@ -71,6 +74,9 @@ class CreateFeedService {
             throw new AppError('Feed não encontrado.');
         }
 
+        await feed.map((feed: any) => {
+            feed.foto = `http://localhost:3000/${feed.foto}`;
+        });
         return response.json({ feed });
     }
 
@@ -108,6 +114,24 @@ class CreateFeedService {
         await feedRepository.save(feeds);
 
         return feeds;
+    }
+
+    public async delete(userId: string, idDoFeed: string): Promise<User | undefined> {
+
+        const feedRepository = getCustomRepository(PostRepository);
+
+
+
+        const user: any = await feedRepository.findById(userId);
+        const feed: any = await feedRepository.findByFeed(idDoFeed);
+
+        if (!user) {
+            throw new AppError('Não existe usuario.');
+        }
+
+        await feedRepository.delete(feed);
+
+        return user;
     }
 }
 

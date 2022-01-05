@@ -6,7 +6,6 @@ import routes from './routes';
 import AppError from '../erros/AppErros';
 import "@shared/typeorm";
 import { errors } from "celebrate";
-import uploadConfig from "@config/upload"
 import path from 'path';
 import "./websocket";
 import { Server, Socket } from 'socket.io';
@@ -16,9 +15,8 @@ const port = 3000;
 
 const app = express();
 
-
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "100mb" }));
 
 
 const serverHttp = http.createServer(app);
@@ -32,6 +30,9 @@ var dadosDeQuemEntrouEmContato: any = [];
 // rotas estaticas , serve para acessar arquivos estaticos passando o /file com o nome do arquivo
 
 app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'uploads')));
+app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'semFoto')));
+app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'upteste')));
+app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'imagensDosFeeds')));
 
 app.use(routes);
 
@@ -62,69 +63,46 @@ function mandarMenssagem(temMsg: any) {
 }
 io.on('connection', (cliente) => {
 
-  cliente.on('mensagens', (msg: any) => {
 
-    idCorrespodente = msg.idCorrespodente
-    let objMsg = {
-      id: msg.id,
-      mensagem: msg.mensagem
-    }
-
-    // console.log(objMsg);
-
-    mensagens.push(objMsg);
-
-    console.log(mensagens);
-
-    let obj = {
-
-      id: msg.dadosDeQuemMandaMensagem.id,
-      mensagens,
-      avatar: msg.dadosDeQuemMandaMensagem.avatar,
-      novaMsg: mensagens[mensagens.length - 1].id == msg.id ? true : false,
-    }
-    dadosDeQuemEntrouEmContato = obj;
-
-    // io.to(msg.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
-
-  })
   cliente.on('join', function (data) {
     cliente.join(data.id);
-    console.log(data.id)
 
-    io.to(idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+    // console.log(data)
 
-
-    // if (dadosDeQuemEntrouEmContato) cliente.emit("previousMensages", dadosDeQuemEntrouEmContato);
+    // io.to(data.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
 
 
-    // cliente.on('mensagens', (msg: any) => {
+    if (dadosDeQuemEntrouEmContato) cliente.emit("previousMensages", dadosDeQuemEntrouEmContato);
 
-    //   let objMsg = {
-    //     id: msg.id,
-    //     mensagem: msg.mensagem
-    //   }
 
-    //   console.log(objMsg);
+    cliente.on('mensagens', (msg: any) => {
 
-    //   mensagens.push(objMsg);
+      let objMsg = {
+        id: msg.id,
+        mensagem: msg.mensagem
+      }
 
-    //   // console.log(mensagens);
+      console.log(objMsg);
 
-    //   let obj = {
+      mensagens.push(objMsg);
 
-    //     id: msg.dadosDeQuemMandaMensagem.id,
-    //     mensagens,
-    //     avatar: msg.dadosDeQuemMandaMensagem.avatar,
-    //     novaMsg: mensagens[mensagens.length - 1].id == msg.id ? true : false,
-    //   }
-    //   dadosDeQuemEntrouEmContato = obj;
+      // console.log(mensagens);
 
-    // io.to(msg.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
-    //   // io.to(msg.id).emit('mensagem', { dadosDeQuemEntrouEmContato, paraMInMesmo: 'ok' });
-    //   // cliente.emit('mensagem', dadosDeQuemEntrouEmContato);
+      let obj = {
 
-    // })
+        id: msg.dadosDeQuemMandaMensagem.id,
+        mensagens,
+        avatar: msg.dadosDeQuemMandaMensagem.avatar,
+        novaMsg: mensagens[mensagens.length - 1].id == msg.id ? true : false,
+      }
+      dadosDeQuemEntrouEmContato = obj;
+
+      io.to(msg.idCorrespodente).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+      io.to(msg.id).emit('mensagem', { dadosDeQuemEntrouEmContato, paraCorrespondente: 'ok' });
+      // io.to(msg.id).emit('mensagem', { dadosDeQuemEntrouEmContato, paraMInMesmo: 'ok' });
+      // cliente.emit('mensagem', dadosDeQuemEntrouEmContato);
+
+    })
   });
 
 });
@@ -142,6 +120,6 @@ serverHttp.listen(3333, () => {
   console.log("websocket na porta 3333");
 })
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${port}! 🏆`);
 });

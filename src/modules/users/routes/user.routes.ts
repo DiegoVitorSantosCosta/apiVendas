@@ -33,7 +33,7 @@ usersRouter.put('/:id', usersController.update);
 usersRouter.patch(
     '/avatar',
     isAuthenticated,
-    upload.single('avatar'),
+    // upload.single('avatar'),
     usersAvatarController.update
 );
 

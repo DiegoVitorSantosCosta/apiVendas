@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreatePosts1640219364029 implements MigrationInterface {
+export class CreateFeeds1641381492355 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
 
@@ -23,7 +23,7 @@ export class CreatePosts1640219364029 implements MigrationInterface {
 
                     {
                         name: 'idUsuario',
-                        type: 'int',
+                        type: 'integer',
                     },
                     {
                         name: 'descricao',
@@ -38,7 +38,7 @@ export class CreatePosts1640219364029 implements MigrationInterface {
                     {
                         name: 'avatar',
                         type: 'varchar',
-                        isNullable: true
+                        isNullable: true,
                     },
                     {
                         name: 'created_at',
@@ -54,14 +54,16 @@ export class CreatePosts1640219364029 implements MigrationInterface {
                 ],
                 foreignKeys: [
                     {
-                        name: "identificador",
-                        referencedTableName: "users",
-                        referencedColumnNames: ["id"],
-                        columnNames: ['idUsuario'],
-                        onDelete: 'CASCADE',
-                        onUpdate: 'CASCADE'
+                        name: "identificador",                           // nome da chave estrangeira
+                        referencedTableName: "users",               // nome da tabela referenciada
+                        referencedColumnNames: ["id"],          // nome da coluna da tabela referenciada
+                        columnNames: ['idUsuario'],                 // nome da coluna na tabela de origem
+                        onDelete: 'CASCADE',                               // CASCADE ou RESTRICT
+                        onUpdate: 'CASCADE',                             // CASCADE: se o usuário for deletado, todos os posts dele também serão
+
                     }
                 ]
+
             }),
         );
 

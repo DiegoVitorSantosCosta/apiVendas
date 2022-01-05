@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateProducts1638617002183 implements MigrationInterface {
+export class CreateProducts1641411462540 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
 
@@ -11,10 +11,11 @@ export class CreateProducts1638617002183 implements MigrationInterface {
                 columns: [
                     {
                         name: 'id',
-                        type: 'uuid',
+                        type: 'integer',
                         isPrimary: true,
-                        generationStrategy: 'uuid',
-                        default: 'uuid_generate_v4()',
+                        generationStrategy: 'increment',
+                        isGenerated: true
+
                     },
                     {
                         name: 'name',
